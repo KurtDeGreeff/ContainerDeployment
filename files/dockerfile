@@ -1,5 +1,5 @@
 #Define the base image we'll be building everything else off of...
-FROM windowsservercore
+FROM windowsservercoreiis
 
 #Give it a label
 LABEL Description="DevApp" Vendor="bundyfx" Version="1.0.1"
