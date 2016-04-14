@@ -8,4 +8,4 @@ LABEL Description="DevApp" Vendor="bundyfx" Version="1.0.1"
 #These files and folders will be imported into the docker image and be available for us to use.
 #
 
-ADD files/ /git/files
+ADD index.html/ \git\files\
