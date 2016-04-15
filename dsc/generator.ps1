@@ -1,12 +1,20 @@
 function Get-TargetResource
 {
     [CmdletBinding()]
-    [OutputType([System.Collections.Hashtable])] 
+    [OutputType([System.Collections.Hashtable])]
     param
     (
         [parameter(Mandatory = $true)]
         [System.String]
         $ContainerName,
+
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $PortMapping,
+
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $ProjectRoot,
 
         [parameter(Mandatory = $true)]
         [System.String]
@@ -17,17 +25,17 @@ function Get-TargetResource
         [System.String]
         $Ensure
     )
-
+    
     $returnValue = @{
-    ContainerName = [System.String]$ContainerName
-    PortMapping = [System.String]$PortMapping
-    GitRootPath = [System.String]$GitRootPath
-    ContainerImage = [System.String]$ContainerImage
-    Ensure = [System.String]$Ensure
+    ContainerName = [System.String]
+    PortMapping = [System.String]
+    ProjectRoot = [System.String]
+    ContainerImage = [System.String]
+    Ensure = [System.String]
     }
 
     $returnValue
-
+    
 }
 
 
@@ -40,11 +48,13 @@ function Set-TargetResource
         [System.String]
         $ContainerName,
 
-        [System.String] 
+        [parameter(Mandatory = $true)]
+        [System.String]
         $PortMapping,
 
+        [parameter(Mandatory = $true)]
         [System.String]
-        $GitRootPath,
+        $ProjectRoot,
 
         [parameter(Mandatory = $true)]
         [System.String]
@@ -55,23 +65,27 @@ function Set-TargetResource
         [System.String]
         $Ensure
     )
+New-Alias -name git -value 'C:\Program Files\git\bin\git.exe' -Force
+
 if ($Ensure -eq 'Present') {
     Write-Verbose 'Entered SET - verison mismatch has been identified - pulling latest content'
-    Set-Location $GitRootPath
-
-    git pull
-    $LocalVersion = (cat $GitRootPath\*\dockerfile | Select-String 'Version.*' -AllMatches).Matches.Value
-    Write-Verbose "Current version of Docker file locally is now $LocalVersion - the same as Git version: $GitVersion"
-
+    Set-Location $ProjectRoot
+    
+    git pull --quiet | Out-null
+    $LocalVersion = (Get-Content $ProjectRoot\files\dockerfile | Select-String 'Version.*' -AllMatches).Matches.Value
+    $LocalVersion = ($LocalVersion | Select-String \d+\.\d+\.\d+ -AllMatches ).Matches.Value
+    
     if ($LocalVersion -match $GitVersion){
-    docker build -t $ContainerImage $GitRootPath\files\
-    docker run -d $ContainerName -p $PortMapping $ContainerImage cmd
+    	docker build -t $ContainerImage $ProjectRoot\files\
+    	docker run -d -it --name "$ContainerName_$LocalVersion" -P $ContainerImage
 
-    Write-Verbose "Container $ContainerName running $ContainerImage - Port Mapping: $PortMapping is now online"
+    	Write-Verbose "Container $ContainerName running $ContainerImage - Port Mapping: $PortMapping is now online"
     }
 }
 
+
 }
+
 
 function Test-TargetResource
 {
@@ -83,11 +97,13 @@ function Test-TargetResource
         [System.String]
         $ContainerName,
 
+        [parameter(Mandatory = $true)]
         [System.String]
         $PortMapping,
 
+        [parameter(Mandatory = $true)]
         [System.String]
-        $GitRootPath,
+        $ProjectRoot,
 
         [parameter(Mandatory = $true)]
         [System.String]
@@ -98,34 +114,36 @@ function Test-TargetResource
         [System.String]
         $Ensure
     )
+New-Alias -name git -value 'C:\Program Files\git\bin\git.exe' -Force
 
     if ($Ensure -eq 'Present'){
-        Write-Verbose "Starting Test DSC COnfiguration"
-        Set-Location $GitRootPath
+        Write-Verbose "Starting Test DSC Configuration"
+        Set-Location $ProjectRoot
         Import-module 'C:\Program Files\WindowsPowerShell\Modules\posh-git\0.6.1.20160330\posh-git.psm1' -Scope Global
+        
+        $LocalVersion = (cat $ProjectRoot\files\dockerfile | Select-String 'Version.*' -AllMatches).Matches.Value
+        Write-Verbose "Local Version: $LocalVersion"        
 
-        $Version = git grep "Version"
-        $GitVersion = ($Version | Select-String 'Version.*' -AllMatches).Matches.Value
-        Write-Verbose "Current version of Docker file in Github is $GitVersion"
+        git pull --quiet | Out-null
+        $GitVersion = (cat $ProjectRoot\files\dockerfile | Select-String 'Version.*' -AllMatches).Matches.Value
+        Write-Verbose "Pulled version: $GitVersion"
 
-        $LocalVersion = (cat $GitRootPath\*\dockerfile | Select-String 'Version.*' -AllMatches).Matches.Value
-        Write-Verbose "Current version of Docker file locally is $LocalVersion"
-
-        if ($GitVersion -match $LocalVersion){
-            Write-Verbose "Version of dockerfile in Github:($GitVersion) matches local version of Docker file:($LocalVersion)"
-            return $true
-            } else {
-                Write-Verbose "Version of dockerfile in Github:($GitVersion) does NOT match the local version of Docker file:($LocalVersion)"
-                return $false
+        if ($GitVersion -ne $LocalVersion){
+            	return $FALSE
+            } 
+        if ($GitVersion -eq $LocalVersion) {
+                return $TRUE
             }
     
     } else {
         Write-Verbose "Ensure is set to $Ensure - Calling SET to remove container"
-        return $False
-    } 
- 
+        return [boolean]$false 
+    }
+
+
+
 }
 
 
-Export-ModuleMember -Function *-TargetResource
+Export-ModuleMember -Function *-TargetResource -Variable GitVersion -Alias git
 
