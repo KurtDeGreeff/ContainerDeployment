@@ -2,7 +2,7 @@
 FROM windowsservercoreiis
 
 #Give it a label
-LABEL Description="DevApp" Vendor="bundyfx" Version="1.3.9"
+LABEL Description="DevApp" Vendor="bundyfx" Version="1.4.9"
 
 #
 #These files and folders will be imported into the docker image and be available for us to use.
