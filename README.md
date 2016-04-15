@@ -1,2 +1,2 @@
 # dockerimages
-docker images for demo with Windows Server 2016 
+dockerfile for demo with Windows Server 2016 / Windows Server Containers
