@@ -11,3 +11,4 @@ LABEL Description="DevApp" Vendor="bundyfx" Version="1.8.9"
 ADD git/files/index.html /inetpub/wwwroot/index.html
 
 ENTRYPOINT CMD
+EXPOSE 80
