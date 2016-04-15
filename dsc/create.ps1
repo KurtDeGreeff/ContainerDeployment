@@ -8,7 +8,7 @@ Import-DscResource -ModuleName ContainerDeploy
         ContainerDeployment 'DevC#Container' {
             ContainerName = 'Csharpdev'
             PortMapping = '86:80'
-            GitRootPath = 'C:\git'
+            GitRootPath = 'C:\git\iis'
             ContainerImage = 'myapp'
             Ensure = 'Present'
         }
@@ -17,6 +17,13 @@ Import-DscResource -ModuleName ContainerDeploy
             PortMapping = '87:80'
             GitRootPath = 'C:\git\python'
             ContainerImage = 'pythonWeb'
+            Ensure = 'Present'
+        }
+        ContainerDeployment 'DevGoContainer' {
+            ContainerName = 'goev'
+            PortMapping = '88:80'
+            GitRootPath = 'C:\git\golang'
+            ContainerImage = 'goWeb'
             Ensure = 'Present'
         }
        
