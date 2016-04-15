@@ -13,7 +13,7 @@ Import-DscResource -ModuleName ContainerDeploy
             Ensure = 'Present'
         }
         ContainerDeployment 'DevPythonContainer' {
-            ContainerName = 'Csharpdev'
+            ContainerName = 'pythondev'
             PortMapping = '87:80'
             GitRootPath = 'C:\git\python'
             ContainerImage = 'pythonWeb'
