@@ -2,11 +2,13 @@
 FROM windowsservercoreiis
 
 #Give it a label
-LABEL Description="DevApp" Vendor="bundyfx" Version="1.8.9"
+LABEL Description="DevApp" Vendor="bundyfx" Version="1.9.9"
 
 #
 #These files and folders will be imported into the docker image and be available for us to use.
 #
 
 ADD git/files/index.html /inetpub/wwwroot/index.html
+
+ENTRYPOINT CMD
 
