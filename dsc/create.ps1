@@ -6,7 +6,7 @@ Import-DscResource -ModuleName ContainerDeploy
     node ("localhost")
     {
         ContainerDeployment 'WebContainer' {
-            ContainerName = 'Web-dev'
+            ContainerName = 'webdev'
             PortMapping = '86:80'
             ProjectRootPath = 'C:\git\iis'
             ContainerImage = 'mywebapp'
@@ -15,7 +15,7 @@ Import-DscResource -ModuleName ContainerDeploy
             Ensure = 'Present'
         }
         ContainerDeployment 'DevDjangoContainer' {
-            ContainerName = 'Django-dev'
+            ContainerName = 'djangodev'
             PortMapping = '87:80'
             ProjectRootPath = 'C:\git\Django'
             ContainerImage = 'mydjangoapp'
@@ -24,7 +24,7 @@ Import-DscResource -ModuleName ContainerDeploy
             Ensure = 'Present'
         }
         ContainerDeployment 'DevGoContainer' {
-            ContainerName = 'go-dev'
+            ContainerName = 'godev'
             PortMapping = '88:80'
             ProjectRootPath = 'C:\git\golang'
             ContainerImage = 'mygolangapp'
@@ -36,4 +36,4 @@ Import-DscResource -ModuleName ContainerDeploy
     }
 }
 
-ContainerDeploy -outputpath C:\
+ContainerDeploy -outputpath C:\DSC
