@@ -10,7 +10,7 @@ LABEL Description="DevGOApp" Vendor="bundyfx" Version="1.6.1"
 
 ADD /webserver.go /go/src/webserver.go
 
-RUN go install /go/src/webserver.go
+
 
 ENTRYPOINT /go/bin/basic_web_server
 
