@@ -8,6 +8,5 @@ LABEL Description="DevDjangoApp" Vendor="bundyfx" Version="1.5.9"
 #These files and folders will be imported into the docker image and be available for us to use.
 #
 
-ADD git/python/files/test.py /inetpub/wwwroot/index.html
 
 ENTRYPOINT CMD
