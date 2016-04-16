@@ -12,5 +12,5 @@ ADD /webserver.go /go/src/webserver.go
 
 
 
-ENTRYPOINT /go/bin/basic_web_server
+ENTRYPOINT /go/bin/
 
