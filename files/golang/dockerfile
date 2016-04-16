@@ -8,8 +8,5 @@ LABEL Description="DevGOApp" Vendor="bundyfx" Version="1.6.0"
 #These files and folders will be imported into the docker image and be available for us to use.
 #
 
-ADD /main.go  /golang/main.go 
 
-RUN go install github.com/bundyfx/dockerimages
-
-ENTRYPOINT /go/bin/golang-docker
+ENTRYPOINT CMD
