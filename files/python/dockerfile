@@ -13,8 +13,6 @@ ADD /manage.py  /python/manage.py
 ADD /setup.py  /python/setup.py
 ADD /helloworld /python/helloworld
 
-CMD python manage.py migrate
-CMD python manage.py runserver
 
 ENTRYPOINT CMD
 
