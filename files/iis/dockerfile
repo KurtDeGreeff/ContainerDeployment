@@ -8,6 +8,6 @@ LABEL Description="DevIISApp" Vendor="bundyfx" Version="1.5.9"
 #These files and folders will be imported into the docker image and be available for us to use.
 #
 
-ADD git/iis/files/iis/index.html /inetpub/wwwroot/index.html
+ADD /index.html /inetpub/wwwroot/index.html
 
 ENTRYPOINT CMD
