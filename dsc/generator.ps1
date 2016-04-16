@@ -93,16 +93,17 @@ if ($Ensure -eq 'Present') {
     if (-not(Test-Path $ProjectRootPath)){
         Write-Verbose "$ProjectRootPath does not exist, creating and cloning $GitProjectURL"
         New-Item -ItemType Directory -Path $ProjectRootPath
-        git clone --quiet $GitProjectURL $ProjectRootPath 
+        git clone --quiet $GitProjectURL $ProjectRootPath
+
         
         $LocalVersion = (Get-Content $ProjectRootPath\files\$ProjectType\dockerfile | Select-String 'Version.*').Matches.Value
         $LocalVersion = ($LocalVersion | Select-String \d+\.\d+\.\d+ -AllMatches ).Matches.Value
 
         Write-Verbose "Creating Container $ContainerName Image: $ContainerImage Version: $LocalVersion Type: $ProjectType"
         docker build -t $ContainerImage $ProjectRootPath\files\$ProjectType
-    	docker run -d -it --name "$ContainerName_$LocalVersion" -p $PortMapping $ContainerImage
+    	docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage
 
-    	Write-Verbose "Container $ContainerName_$LocalVersion running $ContainerImage - Port Mapping: $PortMapping is now online" 
+    	Write-Verbose "Container $ContainerName $LocalVersion running $ContainerImage - Port Mapping: $PortMapping is now online" 
         } else {
 
     Write-Verbose 'Verison mismatch has been identified - pulling latest content'
@@ -113,10 +114,21 @@ if ($Ensure -eq 'Present') {
     $LocalVersion = ($LocalVersion | Select-String \d+\.\d+\.\d+ -AllMatches ).Matches.Value
     
     if ($LocalVersion -match $GitVersion){
-    	docker build -t $ContainerImage $ProjectRoot\files\$ProjectType
-    	docker run -d -it --name "$ContainerName_$LocalVersion" -p $PortMapping $ContainerImage
-
-    	Write-Verbose "Container $ContainerName_$LocalVersion running $ContainerImage - Port Mapping: $PortMapping is now online"
+        try {
+        Write-Verbose "Stopping Container: $ContainerName"
+        docker stop $ContainerName 
+        Write-Verbose "Removing Container: $ContainerName"
+        docker rm $ContainerName
+        Write-Verbose "Removing Container Image:$ContainerImage"
+        docker rmi $ContainerImage
+        Write-Verbose "Running: docker build -t $ContainerImage $ProjectRootPath\files\$ProjectType\"
+    	docker build -t $ContainerImage $ProjectRootPath\files\$ProjectType\
+        Write-Verbose "Running: docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage"
+    	docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage
+        Write-Verbose "Container $ContainerName $LocalVersion running $ContainerImage - Port Mapping: $PortMapping is now online"
+        } catch [Exception] {
+    	throw 'Something went horribly wrong!'
+       }
     }
     }
 }
@@ -179,7 +191,8 @@ try {
             
         $LocalVersion = (Get-Content "$ProjectRootPath\files\$ProjectType\dockerfile" | Select-String 'Version.*').Matches.Value
         Write-Verbose "Local Version: $LocalVersion"        
-
+        
+        Set-Location $ProjectRootPath
         git pull --quiet | Out-null #pull the latest content to check for new versioning
         $GitVersion = (Get-Content "$ProjectRootPath\files\$ProjectType\dockerfile" | Select-String 'Version.*').Matches.Value
         Write-Verbose "Pulled version: $GitVersion"
