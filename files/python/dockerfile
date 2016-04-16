@@ -9,4 +9,9 @@ LABEL Description="DevDjangoApp" Vendor="bundyfx" Version="1.5.9"
 #
 
 
+ADD /manage.py  /python/manage.py
+ADD /setup.py  /python/setup.py
+ADD /helloworld /python/helloworld
+
 ENTRYPOINT CMD
+
