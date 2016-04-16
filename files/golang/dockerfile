@@ -8,8 +8,8 @@ LABEL Description="DevGOApp" Vendor="bundyfx" Version="1.5.9"
 #These files and folders will be imported into the docker image and be available for us to use.
 #
 
-ADD myapp/app.yaml  /golang/myapp/app.yaml 
-ADD myapp/hello.go  /golang/myapp/hello.go 
+ADD /main.go  /golang/main.go 
 
+RUN go install github.com/bundyfx/dockerimages
 
-ENTRYPOINT goapp serve golang/myapp
+ENTRYPOINT /go/bin/golang-docker
