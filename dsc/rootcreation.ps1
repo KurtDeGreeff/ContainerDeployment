@@ -8,4 +8,4 @@ New-xDscResource –Name ContainerDeployment -Property @(
     New-xDscResourceProperty –Name Ensure –Type String –Attribute Key -ValidateSet 'Absent','Present'
 ) -Path "C:\Program Files\WindowsPowerShell\Modules\ContainerDeploy" -Verbose
 
-New-ModuleManifest -Path "C:\Program Files\WindowsPowerShell\Modules\ContainerDeploy\ContainerDeploy.psd1" -CompanyName Coolblue -Guid (New-Guid) -Author 'Flynn Bundy' -ModuleVersion '1.0.0'
+New-ModuleManifest -Path "C:\Program Files\WindowsPowerShell\Modules\ContainerDeploy\ContainerDeploy.psd1" -CompanyName bundyfx -Guid (New-Guid) -Author 'Flynn Bundy' -ModuleVersion '1.0.0'
