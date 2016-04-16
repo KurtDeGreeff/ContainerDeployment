@@ -5,25 +5,31 @@ Import-DscResource -ModuleName ContainerDeploy
 
     node ("localhost")
     {
-        ContainerDeployment 'DevC#Container' {
-            ContainerName = 'Csharpdev'
+        ContainerDeployment 'WebContainer' {
+            ContainerName = 'Web-dev'
             PortMapping = '86:80'
-            GitRootPath = 'C:\git\iis'
-            ContainerImage = 'myapp'
+            ProjectRootPath = 'C:\git\iis'
+            ContainerImage = 'MyWebAPP'
+            ProjectType = 'IIS'
+            GitProjectURL = 'https://github.com/bundyfx/dockerimages.git'
             Ensure = 'Present'
         }
-        ContainerDeployment 'DevPythonContainer' {
-            ContainerName = 'pythondev'
+        ContainerDeployment 'DevDjangoContainer' {
+            ContainerName = 'Django-dev'
             PortMapping = '87:80'
-            GitRootPath = 'C:\git\python'
-            ContainerImage = 'pythonWeb'
+            ProjectRootPath = 'C:\git\Django'
+            ContainerImage = 'MyDjangoAPP'
+            ProjectType = 'Python'
+            GitProjectURL = 'https://github.com/bundyfx/dockerimages.git'
             Ensure = 'Present'
         }
         ContainerDeployment 'DevGoContainer' {
-            ContainerName = 'goev'
+            ContainerName = 'go-dev'
             PortMapping = '88:80'
-            GitRootPath = 'C:\git\golang'
-            ContainerImage = 'goWeb'
+            ProjectRootPath = 'C:\git\golang'
+            ContainerImage = 'MyGoAPP'
+            GitProjectURL = 'https://github.com/bundyfx/dockerimages.git'
+            ProjectType = 'Golang'
             Ensure = 'Present'
         }
        
