@@ -1,20 +1,15 @@
 package main
 
 import (
- "fmt"
- "os"
- "github.com/gorilla/mux"
- "net/http"
- )
+	"io"
+	"net/http"
+)
 
-func HelloWorld(w http.ResponseWriter, r *http.Request){
+func hello(w http.ResponseWriter, r *http.Request) {
+	io.WriteString(w, "Hello from GO! Running inside a Windows Server Container")
+}
 
-                 w.Write([]byte("Hello World!!!"))
- }
-
-func main(){
-
-            r := mux.NewRouter()
-            r.HandleFunc("/", HelloWorld)
-            http.ListenAndServe(":8080",r)
- }
+func main() {
+	http.HandleFunc("/", hello)
+	http.ListenAndServe(":8000", nil)
+}
