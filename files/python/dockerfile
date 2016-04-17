@@ -14,7 +14,6 @@ ADD /setup.py  /python/setup.py
 ADD /helloworld /python/helloworld
 
 CMD python python/manage.py migrate
-CMD python python/manage.py runserver
 
-ENTRYPOINT CMD
+ENTRYPOINT python/
 
