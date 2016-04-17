@@ -14,7 +14,7 @@ ADD /setup.py  /python/setup.py
 ADD /helloworld /python/helloworld
 
 RUN ["python", "/python/manage.py", "migrate"]
-RUN ["python", "/python/manage.py", "runserver"]
+CMD ["python", "/python/manage.py", "runserver"]
 
 
 ENTRYPOINT CMD
