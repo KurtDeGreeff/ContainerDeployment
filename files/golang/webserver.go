@@ -6,7 +6,7 @@ import (
 )
 
 func hello(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "Hello from GO! Running inside a Windows Server Container")
+	io.WriteString(w, "Hello from GO! Running inside a Windows Server Container!!")
 }
 
 func main() {
