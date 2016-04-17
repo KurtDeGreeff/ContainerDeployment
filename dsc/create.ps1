@@ -14,15 +14,6 @@ Import-DscResource -ModuleName ContainerDeploy
             GitProjectURL = 'https://github.com/bundyfx/dockerimages.git'
             Ensure = 'Present'
         }
-        ContainerDeployment 'DevDjangoContainer' {
-            ContainerName = 'djangodev'
-            PortMapping = '8000:8000'
-            ProjectRootPath = 'C:\git\Django'
-            ContainerImage = 'mydjangoapp'
-            ProjectType = 'Python'
-            GitProjectURL = 'https://github.com/bundyfx/dockerimages.git'
-            Ensure = 'Present'
-        }
         ContainerDeployment 'DevGoContainer' {
             ContainerName = 'godev'
             PortMapping = '88:80'
