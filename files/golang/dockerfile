@@ -2,7 +2,7 @@
 FROM microsoft/golang
 
 #Give it a label
-LABEL Description="DevGOApp" Vendor="bundyfx" Version="1.6.3"
+LABEL Description="DevGOApp" Vendor="bundyfx" Version="1.6.4"
 
 #
 #These files and folders will be imported into the docker image and be available for us to use.
@@ -10,5 +10,5 @@ LABEL Description="DevGOApp" Vendor="bundyfx" Version="1.6.3"
 
 ADD /webserver.go /go/src/webserver.go
 
-CMD /go/src/webserver.go
+CMD ["go run", "/go/src/webserver.go"]
 
