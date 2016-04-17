@@ -2,7 +2,7 @@
 FROM microsoft/django
 
 #Give it a label
-LABEL Description="DevDjangoApp" Vendor="bundyfx" Version="1.6.4"
+LABEL Description="DevDjangoApp" Vendor="bundyfx" Version="1.6.5"
 
 #
 #These files and folders will be imported into the docker image and be available for us to use.
