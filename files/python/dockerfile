@@ -15,5 +15,3 @@ ADD /helloworld /python/helloworld
 
 RUN ["python", "/python/manage.py", "migrate"]
 CMD ["python", "/python/manage.py", "runserver"]
-
-EXPOSE 8000
