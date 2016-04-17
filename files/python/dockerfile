@@ -11,6 +11,7 @@ LABEL Description="DevDjangoApp" Vendor="bundyfx" Version="1.6.3"
 
 ADD /manage.py  /python/manage.py
 ADD /setup.py  /python/setup.py
+ADD /helloworld.db /python/helloworld.db  
 ADD /helloworld /python/helloworld
 
 RUN ["python", "/python/manage.py", "migrate"]
