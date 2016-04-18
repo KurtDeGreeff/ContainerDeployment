@@ -16,7 +16,7 @@ Import-DscResource -ModuleName ContainerDeploy
         }
         ContainerDeployment 'DevGoContainer' {
             ContainerName = 'godev'
-            PortMapping = '88:80'
+            PortMapping = '88:8000'
             ProjectRootPath = 'C:\git\golang'
             ContainerImage = 'mygolangapp'
             GitProjectURL = 'https://github.com/bundyfx/dockerimages.git'
