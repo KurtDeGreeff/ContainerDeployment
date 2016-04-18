@@ -91,17 +91,41 @@ New-Alias -name git -value 'C:\Program Files\git\bin\git.exe' -Force
 
 if ($Ensure -eq 'Present') {
     if (-not(Test-Path $ProjectRootPath)){
-        Write-Verbose "$ProjectRootPath does not exist, creating and cloning $GitProjectURL"
+        Write-Verbose "Creating and cloning $GitProjectURL"
         New-Item -ItemType Directory -Path $ProjectRootPath
+        try {
         git clone --quiet $GitProjectURL $ProjectRootPath
+            } catch [Exception]{
+            throw "failed when attempting to clone $GitProjectURL to local path: $ProjectRootPath"
+            }
 
         
         $LocalVersion = (Get-Content $ProjectRootPath\files\$ProjectType\dockerfile | Select-String 'Version.*').Matches.Value
         $LocalVersion = ($LocalVersion | Select-String \d+\.\d+\.\d+ -AllMatches ).Matches.Value
 
+        if ((docker images) -match "microsoft/$ProjectType"){
+            Write-Verbose "Image specified in Dockerfile is microsoft/$projectype - no need to download"
+            } else {
+            Write-Verbose "microsoft/$projecttype cannot be found locally, downloading"
+            try {
+            Write-Verbose "running command: docker pull microsoft/$projecttype"
+            docker pull "microsoft/$projecttype"
+                } catch [Exception] {
+                throw 'Image cannot be downloaded using docker pull'
+                }
+            }
+ 
+        if (docker images -q $ContainerImage){
+                Write-Verbose "Removing Container Image:$ContainerImage"
+                docker rmi $ContainerImage
+                }
+        if (-not (docker images -q $ContainerImage)){
+                Write-Verbose "Running: docker build -t $ContainerImage $ProjectRootPath\files\$ProjectType\"
+    	        docker build -t $ContainerImage $ProjectRootPath\files\$ProjectType\
+                }
+
         Write-Verbose "Creating Container $ContainerName Image: $ContainerImage Version: $LocalVersion Type: $ProjectType"
-        docker build -t $ContainerImage $ProjectRootPath\files\$ProjectType
-    	docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage
+    	docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage --rm
 
     	Write-Verbose "Container $ContainerName $LocalVersion running $ContainerImage - Port Mapping: $PortMapping is now online" 
         } else {
@@ -115,23 +139,53 @@ if ($Ensure -eq 'Present') {
     
     if ($LocalVersion -match $GitVersion){
         try {
-        Write-Verbose "Stopping Container: $ContainerName"
-        docker stop $ContainerName 
-        Write-Verbose "Removing Container: $ContainerName"
-        docker rm $ContainerName
-        Write-Verbose "Removing Container Image:$ContainerImage"
-        docker rmi $ContainerImage
-        Write-Verbose "Running: docker build -t $ContainerImage $ProjectRootPath\files\$ProjectType\"
-    	docker build -t $ContainerImage $ProjectRootPath\files\$ProjectType\
+        if ((docker ps --filter name=$ContainerName -a -q) -and (docker ps --filter 'status=running' -a -q )){
+                Write-Verbose "Stopping Container: $ContainerName"
+                docker stop $ContainerName 
+                } else {
+                    Write-Verbose "No Container named $ContainerName currently running"
+                    }
+        if((docker ps --filter name=$ContainerName -a -q) -and -not (docker ps --filter 'status=running' -a -q )){
+                Write-Verbose "Removing Container: $ContainerName"
+                docker rm $ContainerName
+            }
+        if (docker images -q $ContainerImage){
+                Write-Verbose "Removing Container Image:$ContainerImage"
+                docker rmi $ContainerImage
+                }
+        if (-not (docker images -q $ContainerImage)){
+                Write-Verbose "Running: docker build -t $ContainerImage $ProjectRootPath\files\$ProjectType\"
+    	        docker build -t $ContainerImage $ProjectRootPath\files\$ProjectType\
+                }
+
         Write-Verbose "Running: docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage"
-    	docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage
+    	docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage --rm
         Write-Verbose "Container $ContainerName $LocalVersion running $ContainerImage - Port Mapping: $PortMapping is now online"
+
         } catch [Exception] {
     	throw 'Something went horribly wrong!'
        }
     }
+  }
+} else {
+
+    if ((docker ps --filter name=$ContainerName -a -q) -and (docker ps --filter 'status=running' -a -q )){
+        Write-Verbose "Stopping Container: $ContainerName"
+        docker stop $ContainerName 
+           } else {
+             Write-Verbose "No Container named $ContainerName currently running"
+                    }
+    if((docker ps --filter name=$ContainerName -a -q) -and -not (docker ps --filter 'status=running' -a -q )){
+            Write-Verbose "Removing Container: $ContainerName"
+            docker rm $ContainerName
+            }
+    if (docker images -q $ContainerImage){
+            Write-Verbose "Removing Container Image:$ContainerImage"
+            docker rmi $ContainerImage
+                }
+     Write-Verbose "Removed $Containname and $ContainerImage"
+
     }
-}
 
 }
 
@@ -185,6 +239,7 @@ try {
 
     if ($Ensure -eq 'Present'){
         if (-not(Test-Path $ProjectRootPath)){
+            Write-Verbose "$ProjectRootPath does not exist, calling SET"
             return $false
         } else {
         Write-Verbose "$ProjectRootPath already exists"
@@ -213,6 +268,5 @@ try {
 
 }
 
-
-Export-ModuleMember -Function *-TargetResource 
+Export-ModuleMember -Function *-TargetResource -Alias git
 
