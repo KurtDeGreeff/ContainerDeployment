@@ -3,7 +3,7 @@ New-xDscResource –Name ContainerDeployment -Property @(
     New-xDscResourceProperty –Name PortMapping –Type String –Attribute Key
     New-xDscResourceProperty –Name ProjectRootPath –Type String  –Attribute Key
     New-xDscResourceProperty –Name GitProjectURL –Type String  –Attribute Key
-    New-xDscResourceProperty –Name ProjectType –Type String  –Attribute Key -ValidateSet 'Golang','Python','IIS'
+    New-xDscResourceProperty –Name ProjectType –Type String  –Attribute Key -ValidateSet 'Golang','IIS'
     New-xDscResourceProperty –Name ContainerImage –Type String –Attribute Key
     New-xDscResourceProperty –Name Ensure –Type String –Attribute Key -ValidateSet 'Absent','Present'
 ) -Path "C:\Program Files\WindowsPowerShell\Modules\ContainerDeploy" -Verbose
