@@ -104,7 +104,7 @@ if ($Ensure -eq 'Present') {
         $LocalVersion = ($LocalVersion | Select-String \d+\.\d+\.\d+ -AllMatches ).Matches.Value
 
         if ((docker images) -match "microsoft/$ProjectType"){
-            Write-Verbose "Image specified in Dockerfile is microsoft/$projectype - no need to download"
+            Write-Verbose "Image specified in Dockerfile is microsoft/$ProjectType - no need to download"
             } else {
             Write-Verbose "microsoft/$projecttype cannot be found locally, downloading"
             try {
@@ -124,8 +124,15 @@ if ($Ensure -eq 'Present') {
     	        docker build -t $ContainerImage $ProjectRootPath\files\$ProjectType\
                 }
 
+        $ContainerPort = ($Portmapping -split ':')[0]
+        if (Get-NetNatStaticMapping | Where {$PsItem.ExternalPort -eq $ContainerPort}){
+            Write-Verbose "Found current static mapping for $PortMapping, Removing."
+            Get-NetNatStaticMapping | Where {$PsItem.ExternalPort -eq $ContainerPort} | Remove-NetNatStaticMapping -confirm:$false
+                }
+
+
         Write-Verbose "Creating Container $ContainerName Image: $ContainerImage Version: $LocalVersion Type: $ProjectType"
-    	docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage --rm
+    	docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage
 
     	Write-Verbose "Container $ContainerName $LocalVersion running $ContainerImage - Port Mapping: $PortMapping is now online" 
         } else {
@@ -158,8 +165,14 @@ if ($Ensure -eq 'Present') {
     	        docker build -t $ContainerImage $ProjectRootPath\files\$ProjectType\
                 }
 
+        $ContainerPort = ($Portmapping -split ':')[0]
+        if (Get-NetNatStaticMapping | Where {$PsItem.ExternalPort -eq $ContainerPort}){
+            Write-Verbose "Found current static mapping for $PortMapping, Removing."
+            Get-NetNatStaticMapping | Where {$PsItem.ExternalPort -eq $ContainerPort} | Remove-NetNatStaticMapping -confirm:$false
+                }
+
         Write-Verbose "Running: docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage"
-    	docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage --rm
+    	docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage 
         Write-Verbose "Container $ContainerName $LocalVersion running $ContainerImage - Port Mapping: $PortMapping is now online"
 
         } catch [Exception] {
@@ -269,4 +282,3 @@ try {
 }
 
 Export-ModuleMember -Function *-TargetResource -Alias git
-
