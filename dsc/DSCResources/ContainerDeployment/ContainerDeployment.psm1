@@ -146,13 +146,13 @@ if ($Ensure -eq 'Present') {
     
     if ($LocalVersion -match $GitVersion){
         try {
-        if ((docker ps --filter name=$ContainerName -a -q) -and (docker ps --filter 'status=running' -a -q )){
+        if ((docker ps --filter name=$ContainerName --filter 'status=running' -a -q )){
                 Write-Verbose "Stopping Container: $ContainerName"
                 docker stop $ContainerName 
                 } else {
                     Write-Verbose "No Container named $ContainerName currently running"
                     }
-        if((docker ps --filter name=$ContainerName -a -q) -and -not (docker ps --filter 'status=running' -a -q )){
+        if((docker ps --filter name=$ContainerName --filter 'status=exited' -a -q )){
                 Write-Verbose "Removing Container: $ContainerName"
                 docker rm $ContainerName
             }
@@ -182,13 +182,13 @@ if ($Ensure -eq 'Present') {
   }
 } else {
 
-    if ((docker ps --filter name=$ContainerName -a -q) -and (docker ps --filter 'status=running' -a -q )){
+    if (docker ps --filter name=$ContainerName --filter 'status=running' -a -q ){
         Write-Verbose "Stopping Container: $ContainerName"
         docker stop $ContainerName 
            } else {
              Write-Verbose "No Container named $ContainerName currently running"
                     }
-    if((docker ps --filter name=$ContainerName -a -q) -and -not (docker ps --filter 'status=running' -a -q )){
+    if(docker ps --filter name=$ContainerName --filter 'status=exited' -a -q ){
             Write-Verbose "Removing Container: $ContainerName"
             docker rm $ContainerName
             }
