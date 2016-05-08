@@ -6,6 +6,7 @@ class ContainerDeployment : OMI_BaseResource
     [Key] String PortMapping;
     [Key] String ProjectRootPath;
     [Key] String GitProjectURL;
+    [Key] String SlackWebHook;
     [Key, ValueMap{"sample-golang","iis"}, Values{"sample-golang","iis"}] String ProjectType;
     [Key] String ContainerImage;
     [Key, ValueMap{"Absent","Present"}, Values{"Absent","Present"}] String Ensure;
