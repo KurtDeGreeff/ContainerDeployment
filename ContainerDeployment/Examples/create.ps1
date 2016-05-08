@@ -27,4 +27,4 @@ Import-DscResource -ModuleName ContainerDeployment
     }
 }
 
-ContainerDeploy -outputpath C:\DSC
+ContainerDeployment -outputpath C:\DSC
