@@ -1,3 +1,169 @@
+function Send-SlackNotification
+{
+    [CmdletBinding()]
+    Param
+    (
+        [Parameter(Mandatory=$true,
+                   Position=0)]
+        [String]
+        $Url,
+
+        [Parameter(Mandatory=$true,
+                   ValueFromPipeline = $true,
+                   Position=1)]
+        [System.Collections.Hashtable]
+        $Notification
+    )
+
+    Begin
+    {
+    }
+    Process
+    {
+        $json = $Notification | ConvertTo-Json -Depth 4
+        $json = [regex]::replace($json,'\\u[a-fA-F0-9]{4}',{[char]::ConvertFromUtf32(($args[0].Value -replace '\\u','0x'))})
+        $json = $json -replace "\\\\", "\"
+        
+        try
+        {
+            Invoke-RestMethod -Method POST -Uri $Url -Body $json
+        }
+
+        catch
+        {
+            Write-Warning $_
+        }
+    }
+    End
+    {
+    }
+}
+
+function New-SlackRichNotification
+{
+    [CmdletBinding(SupportsShouldProcess=$false)]
+    [OutputType([System.Collections.Hashtable])]
+    Param
+    (
+        #<Attachment>
+        [Parameter(Mandatory=$true,
+                    Position=0
+                    )]
+        [String]
+        $Fallback,
+        
+        [Parameter(Mandatory=$false,
+                    ParameterSetName='SeverityOrColour')]
+        [ValidateSet("good",
+                     "warning", 
+                     "danger"
+                     )]
+        [String]
+        $Severity,
+        
+        [Parameter(Mandatory=$false,
+                    ParameterSetName='ColourOrSeverity'
+                    )]
+        [Alias("Colour")]
+        [string]
+        $Color,
+
+        [Parameter(Mandatory=$false)]
+        [String]
+        $AuthorName,
+
+        [Parameter(Mandatory=$false)]
+        [String]
+        $Pretext,
+
+        [Parameter(Mandatory=$false)]
+        [String]
+        $AuthorLink,
+
+        [Parameter(Mandatory=$false)]
+        [String]
+        $AuthorIcon,
+
+        [Parameter(Mandatory=$false)] 
+        [String]
+        $Title,
+
+        [Parameter(Mandatory=$false)]
+        [String]
+        $TitleLink,
+        
+        [Parameter(Mandatory=$false,
+                    Position=1
+                    )]
+        [String]
+        $Text,
+
+        [Parameter(Mandatory=$false)]
+        [String]
+        $ImageURL,
+
+        [Parameter(Mandatory=$false)]
+        [String]
+        $ThumbURL,
+        
+        [Parameter(Mandatory=$false)]
+        [Array]
+        $Fields,
+        #</Attachment>
+        #<postMessage Arguments>
+        [Parameter(Mandatory=$false)]
+        [String]
+        $Channel,
+
+        [Parameter(Mandatory=$false)]
+        [String]
+        $UserName,
+
+        [Parameter(Mandatory=$false)]
+        [String]
+        $IconUrl
+        #</postMessage Arguments>
+    )
+
+    Begin
+    {
+    }
+    Process
+    {
+        #consolidate the colour and severity parameters for the API.
+        If($Severity -match 'good|warning|danger')
+        {
+            $Color = $Severity
+        }
+        
+        $SlackNotification = @{
+            username = $UserName
+            icon_url = $IconUrl
+            attachments = @(
+                @{                    
+                    fallback = $Fallback
+                    color = $Color
+                    pretext = $Pretext
+                    author_name = $AuthorName
+                    author_link = $AuthorLink
+                    author_icon = $AuthorIcon
+                    title = $Title
+                    title_link = $TitleLink
+                    text = $Text
+                    fields = $Fields #Fields are defined by the user as an Array of HashTables.
+                    image_url = $ImageURL
+                    thumb_url = $ThumbURL
+                }    
+            )
+        }
+
+        Write-Output $SlackNotification
+    }
+    End
+    {
+    }
+}
+
 function Get-TargetResource
 {
     [CmdletBinding()]
@@ -15,6 +181,10 @@ function Get-TargetResource
         [parameter(Mandatory = $true)]
         [System.String]
         $ProjectRootPath,
+        
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SlackWebHook,
 
         [parameter(Mandatory = $true)]
         [System.String]
@@ -67,6 +237,10 @@ function Set-TargetResource
         [parameter(Mandatory = $true)]
         [System.String]
         $ProjectRootPath,
+        
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SlackWebHook,
 
         [parameter(Mandatory = $true)]
         [System.String]
@@ -220,6 +394,10 @@ function Test-TargetResource
         [parameter(Mandatory = $true)]
         [System.String]
         $ProjectRootPath,
+        
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SlackWebHook,
 
         [parameter(Mandatory = $true)]
         [System.String]
@@ -281,4 +459,4 @@ try {
 
 }
 
-Export-ModuleMember -Function *-TargetResource -Alias git
+Export-ModuleMember -Function * -Alias git
