@@ -1,7 +1,7 @@
 configuration ContainerDeployment
 {
 
-Import-DscResource -ModuleName ContainerDeploy
+Import-DscResource -ModuleName ContainerDeployment
 
     node ("localhost")
     {
