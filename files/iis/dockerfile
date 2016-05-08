@@ -1,5 +1,5 @@
 #Define the base image we'll be building everything else off of...
-FROM microsoft/iis
+FROM microsoft/iis:windowsservercore
 
 #Give it a label
 LABEL Description="DevIISApp" Vendor="bundyfx" Version="1.7.7"
