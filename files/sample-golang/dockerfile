@@ -10,5 +10,5 @@ LABEL Description="DevGOApp" Vendor="bundyfx" Version="1.7.2"
 
 ADD /webserver.go /go/src/webserver.go
 
-CMD ["go run", "/go/src/webserver.go"]
+CMD go run C:\go\src\webserver.go
 
