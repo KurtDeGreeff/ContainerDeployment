@@ -20,7 +20,7 @@ Import-DscResource -ModuleName ContainerDeploy
             ProjectRootPath = 'C:\git\golang'
             ContainerImage = 'mygolangapp'
             GitProjectURL = 'https://github.com/bundyfx/dockerimages.git'
-            ProjectType = 'Golang'
+            ProjectType = 'sample-golang'
             Ensure = 'Present'
         }
        
