@@ -11,7 +11,7 @@ Import-DscResource -ModuleName ContainerDeployment
             ProjectRootPath = 'C:\git\iis'
             ContainerImage = 'mywebapp'
             ProjectType = 'iis'
-            GitProjectURL = 'https://github.com/bundyfx/dockerimages.git'
+            GitProjectURL = 'https://github.com/bundyfx/ContainerDeployment.git'
             Ensure = 'Present'
         }
         ContainerDeployment 'DevGoContainer' {
@@ -19,7 +19,7 @@ Import-DscResource -ModuleName ContainerDeployment
             PortMapping = '88:8000'
             ProjectRootPath = 'C:\git\golang'
             ContainerImage = 'mygolangapp'
-            GitProjectURL = 'https://github.com/bundyfx/dockerimages.git'
+            GitProjectURL = 'https://github.com/bundyfx/ContainerDeployment.git'
             ProjectType = 'sample-golang'
             Ensure = 'Present'
         }
