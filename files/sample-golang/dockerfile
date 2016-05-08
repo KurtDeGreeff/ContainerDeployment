@@ -1,5 +1,5 @@
 #Define the base image we'll be building everything else off of...
-FROM microsoft/sample-golang
+FROM microsoft/sample-golang:windowsservercore
 
 #Give it a label
 LABEL Description="DevGOApp" Vendor="bundyfx" Version="1.7.2"
