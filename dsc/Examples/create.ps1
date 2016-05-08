@@ -1,4 +1,4 @@
-configuration ContainerDeploy
+configuration ContainerDeployment
 {
 
 Import-DscResource -ModuleName ContainerDeploy
