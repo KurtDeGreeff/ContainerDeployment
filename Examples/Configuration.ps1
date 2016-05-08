@@ -1,6 +1,13 @@
 configuration ContainerDeployment
 {
 
+Param (
+  [Parameter(Mandatory=$true,
+                 Position=0)]
+        $SlackWebHook
+    
+      )
+
 Import-DscResource -ModuleName ContainerDeployment
 
     node ("localhost")
@@ -11,6 +18,7 @@ Import-DscResource -ModuleName ContainerDeployment
             ProjectRootPath = 'C:\git\iis'
             ContainerImage = 'mywebapp'
             ProjectType = 'iis'
+            SlackWebHook = "$SlackWebHook"
             GitProjectURL = 'https://github.com/bundyfx/ContainerDeployment.git'
             Ensure = 'Present'
         }
@@ -20,6 +28,7 @@ Import-DscResource -ModuleName ContainerDeployment
             ProjectRootPath = 'C:\git\golang'
             ContainerImage = 'mygolangapp'
             GitProjectURL = 'https://github.com/bundyfx/ContainerDeployment.git'
+            SlackWebHook = "$SlackWebHook"
             ProjectType = 'sample-golang'
             Ensure = 'Present'
         }
