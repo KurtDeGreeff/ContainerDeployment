@@ -108,8 +108,8 @@ if ($Ensure -eq 'Present') {
             } else {
             Write-Verbose "microsoft/$projecttype cannot be found locally, downloading"
             try {
-            Write-Verbose "running command: docker pull microsoft/$projecttype:windowsservercore"
-            docker pull "microsoft/$projecttype:windowsservercore"
+            Write-Verbose "running command: docker pull microsoft/$projecttype`:windowsservercore"
+            docker pull "microsoft/$projecttype`:windowsservercore"
                 } catch [Exception] {
                 throw 'Image cannot be downloaded using docker pull'
                 }
