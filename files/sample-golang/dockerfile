@@ -1,5 +1,5 @@
 #Define the base image we'll be building everything else off of...
-FROM microsoft/golang
+FROM microsoft/sample-golang
 
 #Give it a label
 LABEL Description="DevGOApp" Vendor="bundyfx" Version="1.7.2"
