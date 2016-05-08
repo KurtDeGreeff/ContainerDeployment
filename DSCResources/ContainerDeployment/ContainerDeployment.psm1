@@ -145,7 +145,7 @@ if ($Ensure -eq 'Present') {
     	$props = @{
         Fallback = 'Container Bot'
         Title = 'New Container'
-        Text =  "New Container: $ContainerName - $LocalVersion running $ContainerImage mapped to port $PortMapping is now online. Quicklink: 'http://' + $((gip).ipv4address.ipaddress) + '$ContainerPort'"
+        Text =  "New Container: $ContainerName - $LocalVersion running $ContainerImage mapped to port $PortMapping is now online. Quicklink: http://$((gip).ipv4address.ipaddress):$ContainerPort"
         Severity = 'good'
         Username = 'Container Bot'
         }
@@ -196,7 +196,7 @@ if ($Ensure -eq 'Present') {
         $props = @{
         Fallback = 'Container Bot'
         Title = 'New Container'
-        Text =  "New Container: $ContainerName - $LocalVersion running $ContainerImage mapped to port $PortMapping is now online. Quicklink: 'http://' + $((gip).ipv4address.ipaddress) + '$ContainerPort'"
+        Text =  "New Container: $ContainerName - $LocalVersion running $ContainerImage mapped to port $PortMapping is now online. Quicklink: http://$((gip).ipv4address.ipaddress):$ContainerPort"
         Severity = 'good'
         Username = 'Container Bot'
         }
