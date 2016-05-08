@@ -10,4 +10,4 @@ LABEL Description="DevIISApp" Vendor="bundyfx" Version="1.7.7"
 
 ADD /index.html /inetpub/wwwroot/index.html
 
-ENTRYPOINT CMD
+RUN CMD
