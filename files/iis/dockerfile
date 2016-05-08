@@ -2,7 +2,7 @@
 FROM microsoft/iis:windowsservercore
 
 #Give it a label
-LABEL Description="DevIISApp" Vendor="bundyfx" Version="1.7.7"
+LABEL Description="DevIISApp" Vendor="bundyfx" Version="1.7.8"
 
 #
 #These files and folders will be imported into the docker image and be available for us to use.
