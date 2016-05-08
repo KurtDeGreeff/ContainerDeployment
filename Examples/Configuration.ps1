@@ -10,7 +10,7 @@ Import-DscResource -ModuleName ContainerDeployment
             PortMapping = '86:80'
             ProjectRootPath = 'C:\git\iis'
             ContainerImage = 'mywebapp'
-            ProjectType = 'IIS'
+            ProjectType = 'iis'
             GitProjectURL = 'https://github.com/bundyfx/dockerimages.git'
             Ensure = 'Present'
         }
