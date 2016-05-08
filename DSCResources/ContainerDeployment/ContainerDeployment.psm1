@@ -132,7 +132,7 @@ if ($Ensure -eq 'Present') {
 
 
         Write-Verbose "Creating Container $ContainerName Image: $ContainerImage Version: $LocalVersion Type: $ProjectType"
-    	docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage
+    	docker run -d -p $PortMapping --name $ContainerName $ContainerImage
 
     	Write-Verbose "Container $ContainerName $LocalVersion running $ContainerImage - Port Mapping: $PortMapping is now online" 
         } else {
@@ -171,8 +171,8 @@ if ($Ensure -eq 'Present') {
             Get-NetNatStaticMapping | Where {$PsItem.ExternalPort -eq $ContainerPort} | Remove-NetNatStaticMapping -confirm:$false
                 }
 
-        Write-Verbose "Running: docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage"
-    	docker run -d -it --name $ContainerName -p $PortMapping $ContainerImage 
+        Write-Verbose "Running: docker run -d -p $PortMapping --name $ContainerName $ContainerImage"
+    	docker run -d -p $PortMapping --name $ContainerName $ContainerImage
         Write-Verbose "Container $ContainerName $LocalVersion running $ContainerImage - Port Mapping: $PortMapping is now online"
 
         } catch [Exception] {
