@@ -21,7 +21,7 @@ function Get-TargetResource
         $GitProjectURL,
 
         [parameter(Mandatory = $true)]
-        [ValidateSet("sample-golang","sample-python","IIS")]
+        [ValidateSet("sample-golang","sample-python","iis")]
         [System.String]
         $ProjectType,
 
