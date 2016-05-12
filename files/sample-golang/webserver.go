@@ -10,7 +10,7 @@ import (
 
 var (
 	address = flag.String("address", "0.0.0.0", "Listening address")
-	port    = flag.String("port", "8080", "Listening port")
+	port    = flag.String("port", "8000", "Listening port")
 	sslPort = flag.String("sslPort", "10433", "SSL listening port")
 	path    = flag.String("path", "/", "URL path")
 	status  = flag.Int("status", 200, "Returned HTTP status code")
