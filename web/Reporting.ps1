@@ -3,40 +3,53 @@ $Containers = docker ps -a -q
 if ($Containers -ne $null){
     foreach ($Container in $Containers){
 
-        $Config = docker inspect $Containers | ConvertFrom-Json 
+        $Config = docker inspect $Container | ConvertFrom-Json 
         if ($config.State.Status -eq 'running'){
-        $Status = "$($config.State.Status) - Started: $($config.State.StartedAt | Get-Date -f g)"
-        } 
+
+        $Uptime = ((New-TimeSpan -Start ($($config.State.StartedAt | Get-Date)) -End (Get-Date) | Select TotalMinutes).TotalMinutes) -as [Int]
+        $Status = "$($config.State.Status) | Uptime: $Uptime Minutes"
+        $Ports = (($Config.networksettings.Ports | Get-Member).Name[-1])
+
+            if($Config.Config.Entrypoint -eq $null){
+            $Command = $Config.Config.cmd
+            }
+            else {
+            $Command = $Config.Config.Entrypoint[-1]
+             }
+          }
+         
             else {
             $Status = $Config.State.Status
+            $Ports = "N/A"
+            $Command = "N/A"
             }
 
          $TableAdd = [pscustomobject]@{
                     Name            = $Config.name
                     Image           = $Config.config.image
-                    Port            = ($Config.networksettings.ports | Get-Member)[-1].Name
+                    Port            = $Ports
                     Status          = $Status
                     PID             = $Config.State.PID
-                    Command         = $Config.Path
+                    Command         = $Command
                     }
 
      [Array]$Output +=      
                  @"
                 </tr>
                 <tr>
-                <td>$($TableAdd.Name)</td>
-                <td>$($TableAdd.Image)</td>
-                <td>$($TableAdd.Port)</td>
-                <td>$($TableAdd.Status)</td>
-                <td>$($TableAdd.PID)</td>
-                <td>$($TableAdd.Command)</td>
+                <td align="left">$($TableAdd.Name)</td>
+                <td align="left">$($TableAdd.Image)</td>
+                <td align="left">$($TableAdd.Port)</td>
+                <td align="left">$($TableAdd.Status)</td>
+                <td align="left">$($TableAdd.PID)</td>
+                <td align="left">$($TableAdd.Command)</td>
                 </tr>   
 "@  
 
 }
 
 $Table = @"
-    			<table border="1">
+    		<table BORDER=1 WIDTH=200>
                 <tr>
                 <th>Name</th>
                 <th>Image</th>
@@ -64,6 +77,7 @@ $Table = @"
 		    <link rel="stylesheet" href="assets/css/main.css" />
 		    <!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
 		    <!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+                    <meta http-equiv="refresh" content="30" >
 	    </head>
 	    <body class="landing">
 
