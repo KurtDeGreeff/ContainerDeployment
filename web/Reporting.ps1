@@ -1,6 +1,6 @@
 $Containers = docker ps -a -q
 
-if ($Containers -gt 1){
+if ($Containers -ge 1){
     foreach ($Container in $Containers){
 
         $Config = docker inspect $Container | ConvertFrom-Json 
@@ -9,7 +9,8 @@ if ($Containers -gt 1){
         $Uptime = ((New-TimeSpan -Start ($($config.State.StartedAt | Get-Date)) -End (Get-Date) | Select TotalMinutes).TotalMinutes) -as [Int]
         $Status = "$($config.State.Status) | Uptime: $Uptime Minutes"
         $Ports = (($Config.networksettings.Ports | Get-Member).Name[-1])
-
+        $Link = $Config.Networksettings.Ports.$Ports.Hostport
+        $Name = "http://$((gip).Ipv4address.IpAddress):$Link"
             if($Config.Config.Entrypoint -eq $null){
             $Command = $Config.Config.cmd
             }
@@ -37,7 +38,7 @@ if ($Containers -gt 1){
                  @"
                 </tr>
                 <tr>
-                <td align="left">$($TableAdd.Name)</td>
+                <td align="left"><a href="$Name">$($TableAdd.Name)</a></td>
                 <td align="left">$($TableAdd.Image)</td>
                 <td align="left">$($TableAdd.Port)</td>
                 <td align="left">$($TableAdd.Status)</td>
