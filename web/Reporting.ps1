@@ -110,7 +110,7 @@ $Table = @"
 "@ | Out-File C:\inetpub\wwwroot\index.html -Encoding utf8 -Force
 
 } else {
-
+@"
     <!DOCTYPE HTML>
     <html>
 	    <head>
@@ -157,5 +157,6 @@ $Table = @"
 	    </body>
     </html>
 "@ | Out-File C:\inetpub\wwwroot\index.html -Encoding utf8 -Force
+
 	
 }
