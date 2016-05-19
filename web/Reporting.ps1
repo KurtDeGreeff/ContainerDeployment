@@ -1,6 +1,6 @@
 $Containers = docker ps -a -q
 
-if ($Containers -ne $null){
+if ($Containers -gt 1){
     foreach ($Container in $Containers){
 
         $Config = docker inspect $Container | ConvertFrom-Json 
